@@ -1,0 +1,12 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:{{ pg_image_version }}
+    restart: always
+    env_file:
+      - secrets.env
+    ports:
+      - "{{ pg_port_host }}:{{ pg_port_container }}"
+    volumes:
+      - "{{ pg_root_dir }}/data:{{ pg_data_volume_container }}"
+      - "{{ pg_root_dir }}/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"

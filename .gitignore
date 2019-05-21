@@ -1,0 +1,8 @@
+secrets/
+userlist
+.DS_Store
+*.retry
+*.backuplines
+site
+host_vars/*.edu
+roles/ext

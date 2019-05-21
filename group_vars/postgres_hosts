@@ -1,0 +1,35 @@
+---
+# file: group_vars/postgres_hosts
+# type: variable file for all postgres hosts
+
+# These are global variables that are used across roles.
+# NOTE: You shouldn't have to change these, to customize this deployment
+#       for individual hosts, create and edit files in the host_vars folder.
+
+# ---------------------------------------------------
+# Postgres Host Configuration
+# ---------------------------------------------------
+
+pg_root_dir: /srv/postgres
+
+# data volume host mount point
+#   This directory is where ansible will upload the data files for the database.
+pg_data_volume_host: postgres-data
+
+# port to serve postgres from on the host
+pg_port_host: 5432
+
+# ---------------------------------------------------
+# Postgres Container Configuration
+# ---------------------------------------------------
+
+# version of postgres to use
+pg_image_version: 11-alpine
+
+# data volume container mount point
+#   This directory is the directory where data sql / csv files end up on the
+#   container.
+pg_data_volume_container: /data
+
+# port to serve postgres from in the container
+pg_port_container: 5432

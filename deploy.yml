@@ -1,0 +1,17 @@
+---
+
+- hosts: postgres_hosts
+  tasks:
+    - name: make sure we're running centos
+      fail: msg="These ansible scripts only work on CentOS or RHEL."
+      when: ansible_distribution != "CentOS" and ansible_distribution != "Red Hat Enterprise Linux"
+  vars:
+    - pip_install_packages:
+      - PyYAML
+      - docker-compose
+      - pyOpenSSL
+  roles:
+    - { role: geerlingguy.repo-epel, tags: setup }
+    - { role: geerlingguy.pip, tags: setup }
+    - { role: geerlingguy.docker, tags: setup }
+    - { role: postgres, tags: postgres }

@@ -1,0 +1,76 @@
+---
+# roles/postgres/tasks/main.yml
+# 
+# deploys and launches postgres
+
+- name: establish postgres directory
+  file:
+    path: "{{ pg_root_dir }}"
+    state: directory
+    mode: 0755
+
+- name: copy postgres service directory from templates
+  template: 
+    src: "{{ item }}" 
+    dest: "{{ pg_root_dir }}/{{ item | basename | regex_replace('\\.j2','') }}"
+  with_fileglob:
+    - templates/*.j2
+  tags:
+    - pg_config
+
+- name: establish postgres data directory
+  file:
+    path: "{{ pg_root_dir }}/data"
+    state: directory
+    mode: 0755
+
+- name: copy data files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ pg_root_dir }}/data/{{ item | basename }}"
+  with_fileglob:
+    - data/*.csv
+  tags:
+    - data
+
+- name: establish postgres docker entrypoint directory
+  file:
+    path: "{{ pg_root_dir }}/docker-entrypoint-initdb.d"
+    state: directory
+    mode: 0755
+
+- name: copy docker entrypoints from templates
+  template: 
+    src: "{{ item }}" 
+    dest: "{{ pg_root_dir }}/docker-entrypoint-initdb.d/{{ item | basename | regex_replace('\\.j2','') }}"
+  with_fileglob:
+    - docker-entrypoint-initdb.d/*
+  tags:
+    - pg_config
+    - data
+
+- name: ensure db and data volumes exists
+  docker_volume:
+    name: "{{ item }}"
+    driver: local
+    state: present
+  with_items:
+    - "{{ pg_data_volume_host }}"
+
+- name: remove existing postgres service
+  docker_service:
+    project_src: "{{ pg_root_dir }}"
+    state: absent
+  tags:
+    - never
+    - nuke
+
+- name: start postgres
+  docker_service:
+    project_src: "{{ pg_root_dir }}"
+    state: present
+    build: yes
+    restarted: yes
+  tags:
+    - pg_config
+    - data

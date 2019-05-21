@@ -1,0 +1,65 @@
+---
+# file: host_vars/hostname.example
+# 
+# This is an example file that holds variables unique to each host.
+
+# ---------------------------------------------------
+# Template / User Database Creation
+# ---------------------------------------------------
+
+pg_template_db: template
+pg_template_db_sql_j2: 
+
+# ---------------------------------------------------
+# Postgres Authentication
+# ---------------------------------------------------
+
+# Only necessary if planning on reading user information from a JSON file.
+pg_users_file: "{{ inventory_hostname }}-postgres-users.json"
+
+pg_auth:
+  # This option allows you to provide a list of objects with username and password fields set.
+  users: "{{ lookup('file', pg_users_file) | from_json }}"
+  ldap:
+    # THE FOLLOWING FOUR REQUIRED IN BOTH BIND/BIND+SEARCH MODES
+
+    # Names or IP addresses of LDAP servers to connect to. Multiple servers may be specified, separated by spaces.
+    ldapserver: 
+
+    # Port number on LDAP server to connect to. If no port is specified, the LDAP library's default port setting will be used.
+    ldapport:
+
+    # Set to ldaps to use LDAPS. This is a non-standard way of using LDAP over SSL, supported by some LDAP server implementations. See also the ldaptls option for an alternative.
+    ldapscheme:
+
+    # Set to 1 to make the connection between PostgreSQL and the LDAP server use TLS encryption. This uses the StartTLS operation per RFC 4513. See also the ldapscheme option for an alternative.
+    ldaptls:
+
+    # THE FOLLOWING TWO USED IN SIMPLE BIND MODE ONLY
+
+    # String to prepend to the user name when forming the DN to bind as, when doing simple bind authentication.
+    ldapprefix:
+
+    # String to append to the user name when forming the DN to bind as, when doing simple bind authentication.
+    ldapsuffix:
+
+    # THE FOLLOWING USED IN BIND+SEARCH MODE ONLY
+
+    # Root DN to begin the search for the user in, when doing search+bind authentication.
+    ldapbasedn:
+
+    # DN of user to bind to the directory with to perform the search when doing search+bind authentication.
+    ldapbinddn:
+
+    # Password for user to bind to the directory with to perform the search when doing search+bind authentication.
+    ldapbindpasswd:
+
+    # Attribute to match against the user name in the search when doing search+bind authentication. If no attribute is specified, the uid attribute will be used.
+    ldapsearchattribute:
+
+    # The search filter to use when doing search+bind authentication. Occurrences of $username will be replaced with the user name. This allows for more flexible search filters than ldapsearchattribute.
+    ldapsearchfilter:
+
+    # An RFC 4516 LDAP URL. This is an alternative way to write some of the other LDAP options in a more compact and standard form. The format is
+    # ldap[s]://host[:port]/basedn[?[attribute][?[scope][?[filter]]]]
+    ldapurl:
