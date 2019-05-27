@@ -1,2 +1,0 @@
-[postgres_hosts]
-orion-196-39.crc.rice.edu ansible_host=10.134.196.39
