@@ -5,4 +5,10 @@ userlist
 *.backuplines
 site
 host_vars/*.edu
+host_vars/*.csv
+host_vars/*.json
 roles/ext
+*.swp
+inventory/devel
+inventory/test
+inventory/production
